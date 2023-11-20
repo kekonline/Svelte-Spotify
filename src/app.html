@@ -1,7 +1,10 @@
 <!doctype html>
-<html lang="en">
+<!-- We will use the no-js class to know if we have JS -->
+<html lang="en" class="no-js">
 	<head>
-		<meta charset="utf-8" />
+	<!-- We will use this script to know if we have JS or not, it will chance the class to 'js' if we have JS -->
+		<script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+		<meta charset="utf-8"/>
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%

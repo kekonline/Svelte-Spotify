@@ -3,10 +3,12 @@
 
 import type { LayoutServerLoad } from "./$types";
 import { SPOTIFY_BASE_URL } from "$env/static/private";
+import { redirect } from "@sveltejs/kit";
 
 //get the cookies to get the access token
-export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
+export const load: LayoutServerLoad = async ({ cookies, fetch, url }) => {
     const accessToken = cookies.get('access_token');
+    const refreshToken = cookies.get('refresh_token');
 
     //if there is no access token, return null
     if (!accessToken) {
@@ -29,8 +31,15 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
         return {
             user: profile
         }
-    } else {
-        // the access token is invalid
+        //if error is 401, it means the access token is invalid or expired but we have a refresh token
+    } if (profileRes.status === 401 && refreshToken) {
+        // refresh the token and try again
+        // this endpoint will return a new access token by doing the refresh process
+        const refreshRes = await fetch('/api/auth/refresh',)
+        if (refreshRes.ok) {
+            //as we refreshed the token, we can try again by reloading the page
+            throw redirect(307, url.pathname);
+        }
         return {
             user: null
         }
