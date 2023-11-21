@@ -20,7 +20,7 @@ const config = {
 		// @unsass/breakpoint for making media queries in scss easier
 		// @use "../styles/functions the scss functions file"
 		scss: {
-			prependData: '@use "../styles/functions";@use "@unsass/breakpoint";'
+			prependData: '@use "src/styles/functions";@use "@unsass/breakpoint";'
 		}
 	}),
 
@@ -31,6 +31,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'$components': 'src/lib/components',
+			'$assets': 'src/assets',
 		}
 	}
 };
