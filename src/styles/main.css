@@ -4,6 +4,7 @@
 @import '@fontsource/metropolis/500';
 @import '@fontsource/metropolis/600';
 @import '@fontsource/metropolis/700';
+@import 'tippy-theme.scss';
 @use 'functions';
 
 /* defining variables for global styles */
@@ -86,4 +87,15 @@ a {
 		outline: 2px solid var(--accent-color);
 		outline-offset: 2px;
 	}
+}
+
+/*  Its hidden but screen readers can still read it */
+.visually-hidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(100%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
 }

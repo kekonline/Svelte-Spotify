@@ -29,15 +29,17 @@
 		</div>
 	{/if}
 	<div id="content">
-		<div id="topbar" bind:this={topbar}>
-			<!-- Wee change the opacity of the topbar based on the scroll position -->
-			<div
-				class="topbar-bg"
-				style:background-color="var(--header-color)"
-				style:opacity={headerOpacity}
-			/>
-			<Header />
-		</div>
+		{#if user}
+			<div id="topbar" bind:this={topbar}>
+				<!-- Wee change the opacity of the topbar based on the scroll position -->
+				<div
+					class="topbar-bg"
+					style:background-color="var(--header-color)"
+					style:opacity={`${headerOpacity}`}
+				/>
+				<Header />
+			</div>
+		{/if}
 		<main id="main-content" class:logged-in={user}>
 			<slot />
 		</main>
