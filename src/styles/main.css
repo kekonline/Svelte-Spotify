@@ -6,6 +6,7 @@
 @import '@fontsource/metropolis/700';
 @import 'tippy-theme.scss';
 @use 'functions';
+@use '@unsass/breakpoint';
 
 /* defining variables for global styles */
 :root {
@@ -116,3 +117,38 @@ a {
 #nprogress .bar {
 	background: var(--accent-color) !important;
 }
+
+.grid-items {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+  }
+  
+  .card {
+	height: 100%;
+}
+
+  @media (min-width: 600px) {
+	.grid-items {
+	  grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+  }
+  
+  @media (min-width: 768px) {
+	.grid-items {
+	  grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+  }
+  
+  @media (min-width: 1200px) {
+	.grid-items {
+	  grid-template-columns: repeat(6, minmax(0, 1fr));
+	}
+  }
+
+  .truncate-1, .truncate-2, .truncate-3 {
+	display: -webkit-box;
+	-webkit-line-clamp: 1; 
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+  }
