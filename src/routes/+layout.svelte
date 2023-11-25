@@ -2,10 +2,18 @@
 	//for nomalizing the css for all browsers
 	import 'modern-normalize/modern-normalize.css';
 	import '../styles/main.css';
+	import NProgress from 'nprogress';
+	import { hideAll } from 'tippy.js';
+	import 'nprogress/nprogress.css';
 	import type { LayoutData } from './$types';
 	import { Navigation, Header } from '$components';
+	import { page } from '$app/stores';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+
 	//we get this from the server side +layout.server.ts, that runs on every request
 	export let data: LayoutData;
+
+	NProgress.configure({ showSpinner: false });
 
 	let topbar: HTMLElement;
 	let scrollY: number;
@@ -17,10 +25,27 @@
 	}
 
 	$: user = data.user;
+
+	beforeNavigate(() => {
+		NProgress.start();
+		hideAll();
+	});
+
+	afterNavigate(() => {
+		NProgress.done();
+	});
 </script>
 
 <!-- We bind scrollY to the window scroll -->
 <svelte:window bind:scrollY />
+
+<svelte:head>
+	<title>Spotify{$page.data.title ? ` - ${$page.data.title}` : ''}</title>
+</svelte:head>
+
+{#if user}
+	<a href="#main-content" class="skip-link">Skip to Content</a>
+{/if}
 
 <div id="main">
 	{#if user}
@@ -49,17 +74,31 @@
 <style lang="scss">
 	#main {
 		display: flex;
+		:global(html.no-js) & {
+			@include breakpoint.down('md') {
+				display: block;
+			}
+		}
 		#content {
 			flex: 1;
 			#topbar {
 				position: fixed;
-				// have a variable for the height of the topbar
 				height: var(--header-height);
 				padding: 0 15px;
 				display: flex;
 				align-items: center;
 				width: 100%;
 				z-index: 100;
+				:global(html.no-js) & {
+					position: sticky;
+					top: 0;
+					background-color: var(--header-color);
+					height: auto;
+					padding: 10px 20px;
+					@include breakpoint.up('md') {
+						position: fixed;
+					}
+				}
 				.topbar-bg {
 					position: absolute;
 					width: 100%;
@@ -78,8 +117,13 @@
 				@include breakpoint.up('md') {
 					padding: 30px 30px 60px;
 				}
-				&:logged-in {
-					padding-top: calc(var(--header-height) + 30px);
+				&.logged-in {
+					padding-top: calc(30px + var(--header-height));
+					:global(html.no-js) & {
+						@include breakpoint.down('md') {
+							padding-top: 30px;
+						}
+					}
 				}
 			}
 		}

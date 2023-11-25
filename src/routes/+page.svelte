@@ -1,36 +1,5 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import type { PageData } from './$types';
 
-<input type="text" />
-<select>
-	<option>Option</option>
-</select>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<br /><br /><br /><br /><br /><br /><br /><br /><br />
-<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br
-/><br /><br /><br />
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-<button>Button</button>
-
-<style lang="scss">
-	h1 {
-		color: red;
-		font-size: functions.toRem(36);
-		@include breakpoint.up('md') {
-			color: green;
-		}
-		@include breakpoint.up('lg') {
-			color: blue;
-		}
-	}
-</style>
+	export let data: PageData;
+</script>

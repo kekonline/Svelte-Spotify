@@ -7,6 +7,8 @@ interface CustomProps {
     hideOthersOnOpen: boolean;
 }
 
+//custom tippy functions that are not part of tippy
+
 type FilteredProps = CustomProps & Omit<Props, keyof CustomProps | keyof LifecycleHooks>;
 
 export type ExtendedProps = FilteredProps & LifecycleHooks<FilteredProps>;

@@ -3,8 +3,9 @@
 	import { Navigation } from '$components';
 	import { page } from '$app/stores';
 	import { ChevronDown, ExternalLink } from 'lucide-svelte';
-	import { tippy } from './actions';
+	import { tippy } from '$actions';
 	import LogoutButton from './LogoutButton.svelte';
+	import { hideOnPopperBlur } from '$actions/tippy/tippy-plugins';
 
 	$: user = $page.data.user;
 </script>
@@ -31,7 +32,8 @@
 					trigger: 'click',
 					placement: 'bottom-end',
 					interactive: true,
-					theme: 'menu'
+					theme: 'menu',
+					hideOnPopperBlur: true
 				}}
 			>
 				{#if user?.images && user.images.length > 0}
@@ -68,6 +70,11 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
+		:global(html.no-js) & {
+			@include breakpoint.down('md') {
+				justify-content: flex-start;
+			}
+		}
 	}
 	.profile-button {
 		background: none;
@@ -78,6 +85,9 @@
 		align-items: center;
 		color: var(--text-color);
 		cursor: pointer;
+		:global(html.no-js) & {
+			display: none;
+		}
 		:global(.profile-arrow) {
 			margin-left: 3px;
 		}
@@ -117,6 +127,18 @@
 					width: 100%;
 					text-align: left;
 					font-size: functions.toRem(14);
+				}
+			}
+		}
+	}
+	:global(html.no-js) #profile-menu {
+		display: block !important;
+		.profile-menu-content {
+			ul {
+				padding: 0;
+				margin: 0;
+				li {
+					display: inline-block;
 				}
 			}
 		}
