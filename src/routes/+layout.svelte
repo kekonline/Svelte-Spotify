@@ -59,7 +59,7 @@
 				<!-- Wee change the opacity of the topbar based on the scroll position -->
 				<div
 					class="topbar-bg"
-					style:background-color="var(--header-color)"
+					style:background-color={$page.data.color ? $page.data.color : 'var(--header-color)'}
 					style:opacity={`${headerOpacity}`}
 				/>
 				<Header />
@@ -106,6 +106,7 @@
 					top: 0;
 					left: 0;
 					z-index: -1;
+					background-image: linear-gradient(rgbsa(0, 0, 0, 0.2), 0 0);
 				}
 				@include breakpoint.up('md') {
 					padding: 0 30px;

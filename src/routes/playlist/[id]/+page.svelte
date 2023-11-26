@@ -24,7 +24,9 @@
 			>{`${album.total_tracks} Track${album.total_tracks > 1 ? 's' : ''}`}</span
 		>
 	</p>
+
 	<TrackList tracks={album.tracks.items} />
+
 	<div class="credits">
 		<p class="date">
 			{new Date(album.release_date).toLocaleDateString('en', {
