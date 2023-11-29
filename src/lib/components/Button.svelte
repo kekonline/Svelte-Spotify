@@ -20,12 +20,19 @@
 	export let element: Element;
 	export let variant: 'solid' | 'outline' | 'danger' = 'solid';
 	export let className: string = '';
+
+	let node: HTMLAnchorElement | HTMLButtonElement;
+
+	export function focus() {
+		node.focus();
+	}
 </script>
 
 <!-- Create a button component that uses svelte:element and props to customize the button -->
 
 <svelte:element
 	this={element}
+	bind:this={node}
 	class="button button-{variant} {className}"
 	on:click
 	{...$$restProps}
