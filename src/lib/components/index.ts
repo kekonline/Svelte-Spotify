@@ -8,3 +8,5 @@ export { default as ItemPage } from './ItemPage.svelte';
 export { default as TrackList } from './TrackList.svelte';
 export { default as Player } from './Player.svelte';
 export { default as Toasts } from './Toasts.svelte';
+export { default as Pagination } from './Pagination.svelte';
+export { default as PlaylistForm } from './PlaylistForm.svelte';
