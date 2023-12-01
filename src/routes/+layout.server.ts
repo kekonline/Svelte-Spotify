@@ -26,13 +26,22 @@ export const load: LayoutServerLoad = async ({ cookies, fetch, url }) => {
     })
 
     if (profileRes.ok) {
-        //using this type we can get data safty and auto complete
         const profile: SpotifyApi.CurrentUsersProfileResponse = await profileRes.json();
-        return {
-            user: profile
+        let userAllPlaylists: SpotifyApi.PlaylistObjectSimplified[] = [];
+        const userPlaylistsRes = await fetch('/api/spotify/me/playlists?limit=50');
+        if (userPlaylistsRes.ok) {
+            const userPlaylistsResJSON: SpotifyApi.ListOfCurrentUsersPlaylistsResponse =
+                await userPlaylistsRes.json();
+            userAllPlaylists = userPlaylistsResJSON.items;
         }
-        //if error is 401, it means the access token is invalid or expired but we have a refresh token
-    } if (profileRes.status === 401 && refreshToken) {
+        return {
+            user: profile,
+            userAllPlaylists
+        };
+    }
+
+    //if error is 401, it means the access token is invalid or expired but we have a refresh token
+    if (profileRes.status === 401 && refreshToken) {
         // refresh the token and try again
         // this endpoint will return a new access token by doing the refresh process
         const refreshRes = await fetch('/api/auth/refresh',)

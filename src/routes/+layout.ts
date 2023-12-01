@@ -4,7 +4,7 @@ import type { LayoutLoad } from "./$types";
 //+layout.ts will run everytime a request in the client or server
 //we also have access to the returned data from +layout.server.ts by accessing data from our event
 export const load: LayoutLoad = ({ data, url }) => {
-    const { user } = data || {};
+    const { user, userAllPlaylists } = data || {};
 
     //307 means temporary redirect
 
@@ -20,7 +20,8 @@ export const load: LayoutLoad = ({ data, url }) => {
 
     //if we have both a shared load (*.ts) and a server load(*.server.ts), we need to return the data
     return {
-        user
-    }
+        user,
+        userAllPlaylists
+    };
 
 }

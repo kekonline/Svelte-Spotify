@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 	import { browser } from '$app/environment';
-	import { Navigation } from '$components';
+	import { LogoutButton, Navigation } from '$components';
 	import { page } from '$app/stores';
 	import { ChevronDown, ExternalLink } from 'lucide-svelte';
 	import { tippy } from '$actions';
-	import LogoutButton from './LogoutButton.svelte';
-	import { hideOnPopperBlur } from '$actions/tippy/tippy-plugins';
+
+	export let userAllPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
 
 	$: user = $page.data.user;
 </script>
@@ -14,7 +14,7 @@
 	<div class="left">
 		<!-- We had a problem that we had two navs in the html even one only showed up and it was not good for SEO so like this only one with show in the html code-->
 		{#if browser}
-			<Navigation desktop={false} />
+			<Navigation desktop={false} {userAllPlaylists} />
 		{/if}
 	</div>
 	<div class="right">
