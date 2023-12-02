@@ -11,6 +11,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import SearchForm from '$components/SearchForm.svelte';
 
 	//we get this from the server side +layout.server.ts, that runs on every request
 	export let data: LayoutData;
@@ -86,6 +87,11 @@
 			</div>
 		{/if}
 		<main id="main-content" class:logged-in={user}>
+			{#if $page.url.pathname.startsWith('/search')}
+				<div class="search-form">
+					<SearchForm />
+				</div>
+			{/if}
 			<slot />
 		</main>
 	</div>
@@ -159,6 +165,15 @@
 			}
 			main#main-content {
 				padding: 30px 15px 60px;
+				.search-form {
+					margin-bottom: 40px;
+					@include breakpoint.up('lg') {
+						display: none;
+					}
+					:global(input) {
+						width: 100%;
+					}
+				}
 				@include breakpoint.up('md') {
 					padding: 30px 30px 60px;
 				}

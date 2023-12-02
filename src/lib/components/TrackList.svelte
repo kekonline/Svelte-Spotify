@@ -5,9 +5,15 @@
 	import playingGif from '$assets/playing.gif';
 	import { tippy } from '$actions';
 	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
+	import { toasts } from '$stores';
+	import { hideAll } from 'tippy.js';
+	import { invalidate } from '$app/navigation';
 
 	let currentlyPlaying: string | null = null;
 	let isPaused: boolean = false;
+	let isAddingToPlaylist: string[] = [];
+	let isRemovingFromPlaylist: string[] = [];
 
 	export let tracks: SpotifyApi.TrackObjectFull[] | SpotifyApi.TrackObjectSimplified[];
 	export let isOwner: boolean = false;
@@ -67,7 +73,45 @@
 			</div>
 			<div class="actions-column" class:is-owner={isOwner}>
 				{#if isOwner}
-					<ListX aria-hidden focusable="false" />
+					<form
+						method="POST"
+						action="/playlist/{$page.params.id}?/removeItem"
+						use:enhance={({ cancel }) => {
+							if (isRemovingFromPlaylist.includes(track.id)) {
+								cancel();
+							}
+							isRemovingFromPlaylist = [...isRemovingFromPlaylist, track.id];
+							return ({ result }) => {
+								if (result.type === 'error') {
+									toasts.error(result.error.message);
+								}
+								if (result.type === 'redirect') {
+									const url = new URL(`${$page.url.origin}${result.location}`);
+									const error = url.searchParams.get('error');
+									const success = url.searchParams.get('success');
+									if (error) {
+										toasts.error(error);
+									}
+									if (success) {
+										toasts.success(success);
+										invalidate(`/api/spotify/playlists/${$page.params.id}`);
+									}
+								}
+								isRemovingFromPlaylist = isRemovingFromPlaylist.filter((t) => t !== track.id);
+							};
+						}}
+					>
+						<input hidden name="track" value={track.id} />
+						<button
+							type="submit"
+							title="Remove {track.name} from playlist"
+							aria-label="Remove {track.name} from playlist"
+							class="remove-pl-button"
+							disabled={isRemovingFromPlaylist.includes(track.id)}
+						>
+							<ListX aria-hidden focusable="false" />
+						</button>
+					</form>
 				{:else}
 					<button
 						title="Add {track.name} to a playlist"
@@ -94,7 +138,34 @@
 					{#if userPlaylists}
 						<div class="playlists-menu" id="{track.id}-playlists-menu" style="display: none;">
 							<div class="playlists-menu-content">
-								<form method="POST" action="/playlist?/addItem&redirect={$page.url.pathname}">
+								<form
+									method="POST"
+									action="/playlist?/addItem&redirect={$page.url.pathname}"
+									use:enhance={({ cancel }) => {
+										if (isAddingToPlaylist.includes(track.id)) {
+											cancel();
+										}
+										isAddingToPlaylist = [...isAddingToPlaylist, track.id];
+										return ({ result }) => {
+											if (result.type === 'error') {
+												toasts.error(result.error.message);
+											}
+											if (result.type === 'redirect') {
+												const url = new URL(`${$page.url.origin}${result.location}`);
+												const error = url.searchParams.get('error');
+												const success = url.searchParams.get('success');
+												if (error) {
+													toasts.error(error);
+												}
+												if (success) {
+													toasts.success(success);
+													hideAll();
+												}
+											}
+											isAddingToPlaylist = isAddingToPlaylist.filter((t) => t !== track.id);
+										};
+									}}
+								>
 									<input hidden value={track.id} name="track" />
 									<div class="field">
 										<select aria-label="Playlist" name="playlist">
@@ -104,7 +175,11 @@
 										</select>
 									</div>
 									<div class="submit-button">
-										<Button element="button" type="submit">
+										<Button
+											disabled={isAddingToPlaylist.includes(track.id)}
+											element="button"
+											type="submit"
+										>
 											Add <span class="visually-hidden"> {track.name} to selected playlist.</span>
 										</Button>
 									</div>
@@ -262,7 +337,27 @@
 			.actions-column {
 				width: 30px;
 				margin-left: 15px;
+				&:not(.is-owner) {
+					:global(html.no-js) & {
+						width: 200px;
+						@include breakpoint.down('md') {
+							margin-left: 0;
+							width: 100%;
+						}
+					}
+				}
 				.add-pl-button {
+					:global(html.no-js) & {
+						display: none;
+					}
+				}
+				.playlists-menu {
+					:global(html.no-js) & {
+						display: block !important;
+					}
+				}
+				.add-pl-button,
+				.remove-pl-button {
 					background: none;
 					border: none;
 					padding: 5px;
@@ -280,7 +375,19 @@
 				}
 				.playlists-menu-content {
 					padding: 15px;
+					:global(html.no-js) & {
+						padding: 0;
+					}
+					form {
+						:global(html.no-js) & {
+							display: flex;
+							align-items: center;
+						}
+					}
 					.field {
+						:global(html.no-js) & {
+							flex: 1;
+						}
 						select {
 							width: 100%;
 							height: 35px;
@@ -290,6 +397,10 @@
 					.submit-button {
 						margin-top: 10px;
 						text-align: right;
+						:global(html.no-js) & {
+							margin-top: 0;
+							margin-left: 10px;
+						}
 					}
 				}
 			}
